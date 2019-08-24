@@ -7,8 +7,8 @@ lock '3.11.0'
 #   CS_AWS_SECRET: ENV["CS_AWS_SECRET"]
 # }
 
-set :application, 'chat-space'
-set :repo_url,  'git@github.com:KazYam1001/chat-space.git'
+set :application, 'other_chat'
+set :repo_url,  'git@github.com:KazYam1001/other_chat.git'
 
 set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system', 'public/uploads')
 
@@ -22,8 +22,8 @@ set :unicorn_pid, -> { "#{shared_path}/tmp/pids/unicorn.pid" }
 set :unicorn_config_path, -> { "#{current_path}/config/unicorn.rb" }
 set :keep_releases, 5
 
-# secrets.yml用のシンボリックリンクを追加
-set :linked_files, %w{ config/secrets.yml }
+# master.key用のシンボリックリンクを追加
+set :linked_files, %w{ config/master.key }
 
 # 元々記述されていた after 「'deploy:publishing', 'deploy:restart'」以下を削除して、次のように書き換え
 
@@ -35,13 +35,13 @@ namespace :deploy do
     invoke 'unicorn:start'
   end
 
-  desc 'upload secrets.yml'
+  desc 'upload master.key'
   task :upload do
     on roles(:app) do |host|
       if test "[ ! -d #{shared_path}/config ]"
         execute "mkdir -p #{shared_path}/config"
       end
-      upload!('config/secrets.yml', "#{shared_path}/config/secrets.yml")
+      upload!('config/master.key', "#{shared_path}/config/master.key")
     end
   end
   before :starting, 'deploy:upload'
