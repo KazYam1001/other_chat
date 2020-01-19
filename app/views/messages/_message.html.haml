@@ -2,5 +2,6 @@
   .upper-info
     %p.upper-info__user= message.user.name
     %p.upper-info__date= message.created_at.to_s
+    %p= message.price.to_s(:delimited, delimiter: ',')
   %p.message__text= message.content
   = image_tag "#{message.image}" if message.image.present?
